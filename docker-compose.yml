@@ -1,0 +1,8 @@
+services:
+  go:
+    build: .
+    image: rtsp_web_viewer
+    ports:
+      - "8083:8083"
+    volumes:
+      - .:/go/src/app
