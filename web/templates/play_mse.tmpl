@@ -70,12 +70,14 @@
         mseStreamingStarted = false;
       }
     }
-    if ($("#videoPlayer")[0].buffered.length > 0) {
-      if (typeof document.hidden !== "undefined" && document.hidden) {
-        //no sound, browser paused video without sound in background
-        $("#videoPlayer")[0].currentTime = $("#videoPlayer")[0].buffered.end(($("#videoPlayer")[0].buffered.length - 1)) - 0.5;
-      }
-    }
+
+    console.log("push");
+    // if ($("#videoPlayer")[0].buffered.length > 0) {
+    //   if (typeof document.hidden !== "undefined" && document.hidden) {
+    //     //no sound, browser paused video without sound in background
+    //     $("#videoPlayer")[0].currentTime = $("#videoPlayer")[0].buffered.end(($("#videoPlayer")[0].buffered.length - 1)) - 0.5;
+    //   }
+    // }
   }
 
   function readPacket(packet) {
@@ -91,19 +93,31 @@
   }
 
   $("#videoPlayer")[0].addEventListener('loadeddata', () => {
-    $("#videoPlayer")[0].play();
+    
+
+    // $("#videoPlayer")[0].play();
+
+    (function(window, videojs) {
+      var player = window.player = videojs('videoPlayer');
+      player.mediainfo = player.mediainfo || {};
+      player.mediainfo.projection = '360';
+
+      // AUTO is the default and looks at mediainfo
+      var vr = window.vr = player.vr({projection: 'AUTO', debug: true, forceCardboard: false});
+    }(window, window.videojs));
+
     let browser = browserDetector();
     if (!browser.safari) {
       makePic();
     }
   });
   //fix stalled video in safari
-  $("#videoPlayer")[0].addEventListener('pause', () => {
-    if ($("#videoPlayer")[0].currentTime > $("#videoPlayer")[0].buffered.end(($("#videoPlayer")[0].buffered.length - 1))) {
-      $("#videoPlayer")[0].currentTime = $("#videoPlayer")[0].buffered.end(($("#videoPlayer")[0].buffered.length - 1)) - 0.1;
-      $("#videoPlayer")[0].play();
-    }
-  });
+  // $("#videoPlayer")[0].addEventListener('pause', () => {
+  //   if ($("#videoPlayer")[0].currentTime > $("#videoPlayer")[0].buffered.end(($("#videoPlayer")[0].buffered.length - 1))) {
+  //     $("#videoPlayer")[0].currentTime = $("#videoPlayer")[0].buffered.end(($("#videoPlayer")[0].buffered.length - 1)) - 0.1;
+  //     $("#videoPlayer")[0].play();
+  //   }
+  // });
 
   $("#videoPlayer")[0].addEventListener('error', () => {
     console.log('video_error')
